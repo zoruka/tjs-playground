@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"target": "ES5",
+		"lib": ["ES2021", "DOM"],
+		"module": "commonjs",
+		"outDir": "dist",
+		"strict": false,
+		"esModuleInterop": true,
+		"noEmit": true,
+		"skipLibCheck": true
+	}
+}

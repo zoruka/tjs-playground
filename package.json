@@ -1,0 +1,26 @@
+{
+	"name": "tjs-playground",
+	"version": "1.0.0",
+	"description": "three.js playground",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"deploy": "fleek sites deploy"
+	},
+	"devDependencies": {
+		"@fleekxyz/cli": "^0.7.3",
+		"@types/three": "^0.160.0",
+		"typescript": "^5.2.2",
+		"vite": "^5.0.11",
+		"vite-plugin-top-level-await": "^1.4.1",
+		"vite-plugin-wasm": "^3.3.0"
+	},
+	"dependencies": {
+		"jolt-physics": "^0.16.0",
+		"lil-gui": "^0.19.1",
+		"three": "^0.160.0"
+	}
+}
