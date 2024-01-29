@@ -1,13 +1,12 @@
 import * as THREE from 'three';
-import { Actor } from './lib';
-import { SceneElement } from './lib/scene-element';
+import { WithBody, WithAction } from './lib';
 
-export class Enemy extends SceneElement implements Actor {
-	constructor(private player: SceneElement) {
-		super();
-	}
+export class Enemy implements WithAction, WithBody {
+	body = this.createBody();
 
-	public act({ deltaTime }: Actor.ActArguments): void {
+	constructor(private player: WithBody) {}
+
+	public act({ deltaTime }: WithAction.ActArguments): void {
 		const enemySpeed = 2 * deltaTime;
 
 		const direction = new THREE.Vector3(

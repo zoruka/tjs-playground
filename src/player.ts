@@ -1,15 +1,11 @@
-import { Actor, Keypad } from './lib';
+import { WithAction, Keypad, WithBody } from './lib';
 import * as THREE from 'three';
-import { SceneElement } from './lib/scene-element';
 
-export class Player extends SceneElement implements Actor {
+export class Player implements WithAction, WithBody {
 	keypad: Keypad<Player.Actions> = this.createKeypad();
+	body = this.createBody();
 
-	constructor() {
-		super();
-	}
-
-	public act({ deltaTime }: Actor.ActArguments): void {
+	public act({ deltaTime }: WithAction.ActArguments): void {
 		const speed = 3 * deltaTime;
 		if (this.keypad.get('move-forward')) {
 			this.body.position.sub(

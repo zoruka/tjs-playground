@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
 import { Player } from './player';
-import { Actor } from './lib';
+import { WithAction } from './lib';
 import { Enemy } from './enemy';
 
 /**
@@ -17,7 +17,7 @@ const canvas = document.querySelector('canvas.webgl')! as HTMLElement;
 
 // Scene
 const scene = new THREE.Scene();
-const actors = [] as Actor[];
+const actors = [] as WithAction[];
 
 /**
  * Textures
