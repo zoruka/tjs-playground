@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
 import { Player } from './player';
 import { Actor } from './lib';
+import { Enemy } from './enemy';
 
 /**
  * Base
@@ -57,25 +58,9 @@ const player = new Player();
 actors.push(player);
 scene.add(player.body);
 
-const enemyBody = new THREE.Mesh(
-	new THREE.BoxGeometry(0.5, 0.5, 0.5),
-	new THREE.MeshStandardMaterial({ color: 0xff0000 })
-);
-const enemyHead = new THREE.Mesh(
-	new THREE.BoxGeometry(0.25, 0.25, 0.25).translate(0, 0.25, 0.25),
-	new THREE.MeshStandardMaterial({ color: 0xffffff })
-);
-
-const enemy = new THREE.Group();
-enemy.add(enemyBody);
-enemy.add(enemyHead);
-
-enemy.castShadow = true;
-enemy.receiveShadow = true;
-enemy.position.x = 5;
-enemy.position.z = 5;
-enemy.position.y = 0.25;
-scene.add(enemy);
+const enemy = new Enemy(player);
+actors.push(enemy);
+scene.add(enemy.body);
 
 /**
  * Sizes
@@ -149,31 +134,6 @@ const tick = () => {
 	}
 
 	// Enemy walk towards player with rotation
-
-	const enemySpeed = 2 * deltaTime;
-
-	const direction = new THREE.Vector3(
-		player.body.position.x - enemy.position.x,
-		0,
-		player.body.position.z - enemy.position.z
-	).normalize();
-
-	const enemyDirection = new THREE.Vector3(
-		Math.sin(enemy.rotation.y),
-		0,
-		Math.cos(enemy.rotation.y)
-	).normalize();
-
-	const angleToRotate = direction.angleTo(enemyDirection);
-	const rotationSense = enemyDirection.cross(direction).y > 0 ? 1 : -1;
-	enemy.rotation.y += rotationSense * angleToRotate * enemySpeed;
-	enemy.position.add(
-		new THREE.Vector3(
-			Math.sin(enemy.rotation.y),
-			0,
-			Math.cos(enemy.rotation.y)
-		).multiplyScalar(enemySpeed)
-	);
 
 	// Render
 	renderer.render(scene, camera);

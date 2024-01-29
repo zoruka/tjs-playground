@@ -1,9 +1,13 @@
 import { Actor, Keypad } from './lib';
 import * as THREE from 'three';
+import { SceneElement } from './lib/scene-element';
 
-export class Player implements Actor {
+export class Player extends SceneElement implements Actor {
 	keypad: Keypad<Player.Actions> = this.createKeypad();
-	body: THREE.Object3D = this.createBody();
+
+	constructor() {
+		super();
+	}
 
 	public act({ deltaTime }: Actor.ActArguments): void {
 		const speed = 3 * deltaTime;
@@ -33,15 +37,7 @@ export class Player implements Actor {
 		}
 	}
 
-	private createKeypad(): Keypad<Player.Actions> {
-		return new Keypad<Player.Actions>()
-			.set('move-forward', ['w', 'ArrowUp'])
-			.set('move-backward', ['s', 'ArrowDown'])
-			.set('move-left', ['a', 'ArrowLeft'])
-			.set('move-right', ['d', 'ArrowRight']);
-	}
-
-	private createBody(): THREE.Object3D {
+	protected createBody(): THREE.Object3D {
 		const elementMaterial = new THREE.MeshStandardMaterial({
 			color: 0x00ff00,
 		});
@@ -61,6 +57,14 @@ export class Player implements Actor {
 		body.castShadow = true;
 
 		return body;
+	}
+
+	private createKeypad(): Keypad<Player.Actions> {
+		return new Keypad<Player.Actions>()
+			.set('move-forward', ['w', 'ArrowUp'])
+			.set('move-backward', ['s', 'ArrowDown'])
+			.set('move-left', ['a', 'ArrowLeft'])
+			.set('move-right', ['d', 'ArrowRight']);
 	}
 }
 
