@@ -1,5 +1,5 @@
 import JOLT from 'jolt-physics';
-import { Vector } from './Vector';
+import { Vector } from './vector';
 
 const LAYER_NON_MOVING = 0;
 const LAYER_MOVING = 1;

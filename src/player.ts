@@ -3,7 +3,11 @@ import * as THREE from 'three';
 
 export class Player implements WithAction, WithBody {
 	keypad: Keypad<Player.Actions> = this.createKeypad();
-	body = this.createBody();
+	body: THREE.Object3D;
+
+	constructor() {
+		this.body = this.createBody();
+	}
 
 	public act({ deltaTime }: WithAction.ActArguments): void {
 		const speed = 3 * deltaTime;
