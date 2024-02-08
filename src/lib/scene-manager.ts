@@ -1,14 +1,16 @@
 import * as THREE from 'three';
-import { WithAction, WithBody } from './interfaces';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { Actor } from './interfaces/actor';
+import SSP from 'ss-physics';
 
 export class SceneManager {
 	private readonly scene: THREE.Scene;
 	private readonly camera: THREE.PerspectiveCamera;
 	private readonly renderer: THREE.WebGLRenderer;
 	private readonly clock: THREE.Clock;
-	private readonly actors: WithAction[] = [];
+	private readonly actors: Actor[] = [];
 	private readonly controls: OrbitControls;
+	private readonly pWorld: SSP.World;
 
 	private lastElapsedTime = 0;
 
@@ -19,6 +21,8 @@ export class SceneManager {
 		this.scene = new THREE.Scene();
 		this.clock = new THREE.Clock(false);
 		this.controls = new OrbitControls(this.camera, args.canvas);
+
+		this.pWorld = new SSP.World({ gravity: 0.01 });
 
 		window.addEventListener('resize', () => {
 			// Update sizes
@@ -45,9 +49,10 @@ export class SceneManager {
 		this.scene.add(element);
 	}
 
-	public addActor(actor: WithAction & WithBody): void {
+	public addActor(actor: Actor): void {
 		this.scene.add(actor.body);
 		this.actors.push(actor);
+		this.pWorld.addBody(actor.physic);
 	}
 
 	private tick() {
@@ -62,6 +67,7 @@ export class SceneManager {
 		}
 
 		this.renderer.render(this.scene, this.camera);
+		this.pWorld.update(deltaTime);
 
 		window.requestAnimationFrame(this.tick.bind(this));
 	}

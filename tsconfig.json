@@ -7,6 +7,13 @@
 		"strict": false,
 		"esModuleInterop": true,
 		"noEmit": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"typeRoots": ["src/lib/experimental"],
+
+		"baseUrl": "src",
+		"paths": {
+			"@/*": ["./*"],
+			"ss-physics": ["./lib/experimental/super-simple-physics/index.ts"]
+		}
 	}
 }

@@ -1,18 +1,21 @@
-import { WithAction, Keypad, WithBody } from './lib';
+import { WithAction, Keypad, Actor } from '@/lib';
 import * as THREE from 'three';
+import SSP from 'ss-physics';
 
-export class Player implements WithAction, WithBody {
+export class Player implements Actor {
 	keypad: Keypad<Player.Actions> = this.createKeypad();
 	body: THREE.Object3D;
+	physic: SSP.Body;
 
 	constructor() {
 		this.body = this.createBody();
+		this.physic = this.createPhysic();
 	}
 
 	public act({ deltaTime }: WithAction.ActArguments): void {
 		const speed = 3 * deltaTime;
 		if (this.keypad.get('move-forward')) {
-			this.body.position.sub(
+			this.physic.applyForce(
 				new THREE.Vector3(
 					Math.sin(this.body.rotation.y),
 					0,
@@ -21,12 +24,14 @@ export class Player implements WithAction, WithBody {
 			);
 		}
 		if (this.keypad.get('move-backward')) {
-			this.body.position.add(
+			this.physic.applyForce(
 				new THREE.Vector3(
 					Math.sin(this.body.rotation.y),
 					0,
 					Math.cos(this.body.rotation.y)
-				).multiplyScalar(speed)
+				)
+					.multiplyScalar(speed)
+					.negate()
 			);
 		}
 		if (this.keypad.get('move-left')) {
@@ -37,7 +42,7 @@ export class Player implements WithAction, WithBody {
 		}
 	}
 
-	protected createBody(): THREE.Object3D {
+	private createBody(): THREE.Object3D {
 		const elementMaterial = new THREE.MeshStandardMaterial({
 			color: 0x00ff00,
 		});
@@ -65,6 +70,13 @@ export class Player implements WithAction, WithBody {
 			.set('move-backward', ['s', 'ArrowDown'])
 			.set('move-left', ['a', 'ArrowLeft'])
 			.set('move-right', ['d', 'ArrowRight']);
+	}
+
+	private createPhysic(): SSP.Body {
+		return new SSP.Body({
+			position: this.body.position,
+			mass: 1,
+		});
 	}
 }
 

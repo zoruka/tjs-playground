@@ -1,11 +1,14 @@
 import * as THREE from 'three';
-import { WithBody, WithAction } from './lib';
+import SSP from 'ss-physics';
+import { WithBody, WithAction, Actor } from './lib';
 
-export class Enemy implements WithAction, WithBody {
+export class Enemy implements Actor {
 	body: THREE.Object3D;
+	physic: SSP.Body;
 
 	constructor(private player: WithBody) {
 		this.body = this.createBody();
+		this.physic = this.createPhysic();
 	}
 
 	public act({ deltaTime }: WithAction.ActArguments): void {
@@ -59,5 +62,12 @@ export class Enemy implements WithAction, WithBody {
 		enemy.position.y = 0.25;
 
 		return enemy;
+	}
+
+	private createPhysic(): SSP.Body {
+		return new SSP.Body({
+			position: this.body.position,
+			mass: 1,
+		});
 	}
 }
