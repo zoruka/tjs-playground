@@ -2,39 +2,48 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Actor } from './interfaces/actor';
 import SSP from 'ss-physics';
+import { Sizes } from './utils/sizes';
 
 export class SceneManager {
 	private readonly scene: THREE.Scene;
-	private readonly camera: THREE.PerspectiveCamera;
+	public readonly camera: THREE.PerspectiveCamera;
 	private readonly renderer: THREE.WebGLRenderer;
 	private readonly clock: THREE.Clock;
 	private readonly actors: Actor[] = [];
 	private readonly controls: OrbitControls;
 	private readonly pWorld: SSP.World;
+	private readonly sizes: Sizes;
 
 	private lastElapsedTime = 0;
 
 	constructor(args: SceneManager.ConstructorArguments) {
-		this.camera = args.camera;
-		this.renderer = args.renderer;
+		this.sizes = new Sizes(args.canvas);
+
+		this.camera = new THREE.PerspectiveCamera(
+			75,
+			this.sizes.width / this.sizes.height,
+			0.1,
+			100
+		);
+
+		this.renderer = new THREE.WebGLRenderer({
+			canvas: args.canvas,
+			antialias: true,
+		});
 
 		this.scene = new THREE.Scene();
 		this.clock = new THREE.Clock(false);
 		this.controls = new OrbitControls(this.camera, args.canvas);
 
-		this.pWorld = new SSP.World({ gravity: 0.01 });
+		this.pWorld = new SSP.World({ gravity: 0 });
 
-		window.addEventListener('resize', () => {
-			// Update sizes
-			args.sizes.width = window.innerWidth;
-			args.sizes.height = window.innerHeight;
+		this.sizes.on('resize', ({ width, height }) => {
+			console.log('resizeCallback', { width, height });
 
-			// Update camera
-			this.camera.aspect = args.sizes.width / args.sizes.height;
+			this.camera.aspect = width / height;
 			this.camera.updateProjectionMatrix();
 
-			// Update renderer
-			this.renderer.setSize(args.sizes.width, args.sizes.height);
+			this.renderer.setSize(width, height);
 			this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		});
 	}
@@ -76,11 +85,5 @@ export class SceneManager {
 export namespace SceneManager {
 	export type ConstructorArguments = {
 		canvas: HTMLCanvasElement;
-		camera: THREE.PerspectiveCamera;
-		renderer: THREE.WebGLRenderer;
-		sizes: {
-			width: number;
-			height: number;
-		};
 	};
 }
